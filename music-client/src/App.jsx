@@ -17,7 +17,7 @@ import Contact from './pages/contact/Contact';
 import Cart from './pages/cart/Cart';
 import Favorites from './pages/profile/favorites/Favorites';
 import PurchaseHistory from './pages/profile/purchaseHistory/PurchaseHistory';
-import Settings from './pages/profile/settings/Settings';
+import Settings from './pages/profile/settings/Settings.jsx';
 import Terms from './pages/terms/Terms';
 import Privacy from './pages/privacy/Privacy';
 import Account from './pages/profile/Account';
