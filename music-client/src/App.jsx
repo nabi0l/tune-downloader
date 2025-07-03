@@ -34,7 +34,7 @@ import AdminAlbums from './pages/admin/Albums.jsx';
 import Artists from './pages/admin/Artists.jsx';
 import Users from './pages/admin/Users.jsx';
 import Analytics from './pages/admin/Analytics.jsx';
-import AdminSettings from './pages/admin/Settings.jsx';
+import AdminSettings from './pages/admin/settings.jsx';
 import CheckoutPage from './pages/checkout/CheckoutPage';
 
 import './index.css';
