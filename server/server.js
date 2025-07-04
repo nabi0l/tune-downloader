@@ -42,16 +42,34 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/christian
 .then(async () => {
   console.log('Connected to MongoDB');
   
-  // Seed albums if the collection is empty
+  // Seed all collections if any are empty
   try {
     const Album = require('./models/Album');
-    const count = await Album.countDocuments();
-    
-    if (count === 0) {
-      console.log('No albums found. Seeding database...');
+    const Artist = require('./models/Artist');
+    const Song = require('./models/Song');
+    const User = require('./models/User');
+
+    const albumCount = await Album.countDocuments();
+    const artistCount = await Artist.countDocuments();
+    const songCount = await Song.countDocuments();
+    const adminCount = await User.countDocuments({ role: 'admin' });
+
+    if (albumCount === 0 || artistCount === 0 || songCount === 0 || adminCount === 0) {
+      console.log('One or more collections are empty. Seeding all main collections...');
       const seedAlbums = require('./seedAlbums');
+      const seedArtists = require('./seedArtists');
+      const seedSongs = require('./seedSongs');
+      const seedAdmins = require('./seedAdmins');
+      const seedArtistsFromSpotify = require('./seedArtistsFromSpotify');
+
+      await seedArtists();
+      await seedSongs();
       await seedAlbums();
-      console.log('Database seeded successfully!');
+      await seedAdmins();
+      await seedArtistsFromSpotify();
+      console.log('All main collections seeded successfully!');
+    } else {
+      console.log('All main collections already have data. No seeding needed.');
     }
   } catch (error) {
     console.error('Error seeding database:', error);
