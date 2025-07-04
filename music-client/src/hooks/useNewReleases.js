@@ -7,12 +7,8 @@ const useNewReleases = (limit = 20, offset = 0) => {
 
   // Get the base URL for API calls
   const getApiUrl = () => {
-    // In development, use the proxy
-    if (import.meta.env.DEV) {
-      return '/api';
-    }
-    // In production, use the full server URL
-    return 'http://localhost:5000/api';
+    // Use VITE_API_URL for both development and production
+    return import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
   };
 
   useEffect(() => {
