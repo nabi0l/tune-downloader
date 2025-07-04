@@ -26,7 +26,7 @@ const Songs = () => {
       setLoading(true);
       const token = await currentUser.getIdToken();
       const response = await fetch(
-        `http://localhost:5000/api/admin/songs?page=${currentPage}&limit=${songsPerPage}&search=${searchTerm}`,
+        `https://tune-downloader.onrender.com/api/admin/songs?page=${currentPage}&limit=${songsPerPage}&search=${searchTerm}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -59,7 +59,7 @@ const Songs = () => {
     if (window.confirm('Are you sure you want to delete this song?')) {
       try {
         const token = await currentUser.getIdToken();
-        const response = await fetch(`http://localhost:5000/api/admin/songs/${id}`, {
+        const response = await fetch(`https://tune-downloader.onrender.com/api/admin/songs/${id}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`

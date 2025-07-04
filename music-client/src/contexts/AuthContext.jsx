@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
 
   // Signup function
   const signup = async (email, password, displayName) => {
-    const response = await fetch('http://localhost:5000/api/auth/signup', {
+    const response = await fetch('https://tune-downloader.onrender.com/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, displayName })
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
 
   // Signin function
   const signin = async (email, password) => {
-    const response = await fetch('http://localhost:5000/api/auth/login', {
+    const response = await fetch('https://tune-downloader.onrender.com/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
       // Fetch user info from backend using token
       const fetchUserInfo = async () => {
         try {
-          const response = await fetch('http://localhost:5000/api/auth/me', {
+          const response = await fetch('https://tune-downloader.onrender.com/api/auth/me', {
             headers: {
               'Authorization': `Bearer ${token}`
             }

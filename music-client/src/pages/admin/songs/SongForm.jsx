@@ -36,13 +36,13 @@ const SongForm = () => {
       try {
         const token = await currentUser.getIdToken();
         const [songRes, artistsRes, albumsRes] = await Promise.all([
-          fetch(`http://localhost:5000/api/admin/songs/${id}`, {
+          fetch(`https://tune-downloader.onrender.com/api/admin/songs/${id}`, {
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('http://localhost:5000/api/artists', {
+          fetch('https://tune-downloader.onrender.com/api/artists', {
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('http://localhost:5000/api/albums', {
+          fetch('https://tune-downloader.onrender.com/api/albums', {
             headers: { 'Authorization': `Bearer ${token}` }
           })
         ]);
@@ -116,8 +116,8 @@ const SongForm = () => {
       });
       
       const url = isEditMode 
-        ? `http://localhost:5000/api/admin/songs/${id}`
-        : 'http://localhost:5000/api/admin/songs';
+        ? `https://tune-downloader.onrender.com/api/admin/songs/${id}`
+        : 'https://tune-downloader.onrender.com/api/admin/songs';
       
       const method = isEditMode ? 'PUT' : 'POST';
       

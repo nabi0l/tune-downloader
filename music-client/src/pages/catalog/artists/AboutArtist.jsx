@@ -15,7 +15,7 @@ const AboutArtist = ({ artist }) => {
     const fetchSpotifyData = async () => {
         try {
             setLoadingSpotify(true);
-            const response = await fetch(`http://localhost:5000/api/artists/${artist._id}/spotify`);
+            const response = await fetch(`https://tune-downloader.onrender.com/api/artists/${artist._id}/spotify`);
             if (response.ok) {
                 const data = await response.json();
                 setSpotifyData(data);

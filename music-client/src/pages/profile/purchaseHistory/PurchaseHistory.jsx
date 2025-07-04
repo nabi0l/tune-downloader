@@ -23,12 +23,12 @@ const PurchaseHistory = () => {
           return;
         }
         const [ordersResponse, statsResponse] = await Promise.all([
-          fetch('http://localhost:5000/api/orders/history', {
+          fetch('https://tune-downloader.onrender.com/api/orders/history', {
             headers: {
               'Authorization': `Bearer ${token}`
             }
           }),
-          fetch('http://localhost:5000/api/orders/stats/summary', {
+          fetch('https://tune-downloader.onrender.com/api/orders/stats/summary', {
             headers: {
               'Authorization': `Bearer ${token}`
             }

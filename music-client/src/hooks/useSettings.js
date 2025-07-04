@@ -38,7 +38,7 @@ const useSettings = () => {
         if (currentUser) {
           const token = localStorage.getItem('token');
           if (token) {
-            const response = await fetch('http://localhost:5000/api/auth/settings', {
+            const response = await fetch('https://tune-downloader.onrender.com/api/auth/settings', {
               headers: {
                 'Authorization': `Bearer ${token}`
               }
@@ -72,7 +72,7 @@ const useSettings = () => {
       if (currentUser) {
         const token = localStorage.getItem('token');
         if (token) {
-          const response = await fetch('http://localhost:5000/api/auth/settings', {
+          const response = await fetch('https://tune-downloader.onrender.com/api/auth/settings', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',

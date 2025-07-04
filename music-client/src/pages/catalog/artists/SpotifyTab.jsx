@@ -31,7 +31,7 @@ const SpotifyTab = ({ artist }) => {
             
             try {
                 console.log(`Fetching Spotify data for artist:`, artist);
-                const response = await fetch(`http://localhost:5000/api/artists/${artist._id}/spotify?market=${country}`);
+                const response = await fetch(`https://tune-downloader.onrender.com/api/artists/${artist._id}/spotify?market=${country}`);
                 
                 if (!response.ok) {
                     const errorData = await response.json();
@@ -84,7 +84,7 @@ const SpotifyTab = ({ artist }) => {
         setAlbumPreviewUrl(null);
 
         try {
-            const response = await fetch(`http://localhost:5000/api/artists/spotify/albums/${album.id}/tracks`);
+            const response = await fetch(`https://tune-downloader.onrender.com/api/artists/spotify/albums/${album.id}/tracks`);
             const data = await response.json();
             if (data.tracks && data.tracks.length > 0) {
                 const previewTrack = data.tracks.find(track => track.preview_url);
@@ -109,7 +109,7 @@ const SpotifyTab = ({ artist }) => {
         setIsModalOpen(true);
 
         try {
-            const response = await fetch(`http://localhost:5000/api/artists/spotify/albums/${album.id}/tracks`);
+            const response = await fetch(`https://tune-downloader.onrender.com/api/artists/spotify/albums/${album.id}/tracks`);
             const data = await response.json();
             setAlbumTracks(data.tracks || []);
         } catch (err) {

@@ -21,7 +21,12 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'],
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://127.0.0.1:5173',
+    'https://tune-downloader-qnz9.vercel.app'
+  ],
   credentials: true
 }));
 app.use(express.json());
@@ -67,6 +72,11 @@ app.use('/api/favorites', favoritesRoutes);
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date() });
+});
+
+// Add a friendly root route
+app.get('/', (req, res) => {
+  res.send('API is running! Welcome to Tune Downloader backend.');
 });
 
 // 404 handler

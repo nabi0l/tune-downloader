@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://tune-downloader.onrender.com/api";
 
 // Mock data for development
 const mockArtist = {
