@@ -7,9 +7,8 @@ const useTrendingSongs = (limit = 20, offset = 0) => {
 
   // Base URL for API calls
   const getApiUrl = () => {
-    // In development, the proxy will handle the request
-    // In production, use the environment variable VITE_API_URL
-    return import.meta.env.VITE_API_BASE_URL || '';
+    // Use VITE_API_URL for both development and production
+    return import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
   };
 
   useEffect(() => {
@@ -27,16 +26,17 @@ const useTrendingSongs = (limit = 20, offset = 0) => {
           headers: {
             'Content-Type': 'application/json',
           },
-          // Add credentials if your API requires authentication
-          // credentials: 'include',
         });
-        
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await response.text();
+          throw new Error('Expected JSON, got: ' + text.slice(0, 100));
+        }
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
           console.error('API Error Response:', errorData);
           throw new Error(`HTTP error! status: ${response.status} - ${errorData.message || 'No error details'}`);
         }
-        
         const data = await response.json();
         
         if (data.success) {
