@@ -25,17 +25,18 @@ import Account from './pages/profile/Account';
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
 import SearchResults from './pages/search';
-import AdminRoutes from './pages/admin/AdminRoutes';
-
-import AdminLayout from './pages/admin/layout/AdminLayout.jsx';
-import Dashboard from './pages/admin/dashboard.jsx';
-import Songs from './pages/admin/songs/Songs.jsx';
-import AdminAlbums from './pages/admin/Albums.jsx';
-import Artists from './pages/admin/Artists.jsx';
-import Users from './pages/admin/Users.jsx';
-import Analytics from './pages/admin/Analytics.jsx';
-import AdminSettings from './pages/admin/settings.jsx';
 import CheckoutPage from './pages/checkout/CheckoutPage';
+
+// import AdminRoutes from './pages/admin/AdminRoutes';
+// import AdminLayout from './pages/admin/layout/AdminLayout.jsx';
+// import Dashboard from './pages/admin/dashboard.jsx';
+// import Songs from './pages/admin/songs/Songs.jsx';
+// import AdminAlbums from './pages/admin/Albums.jsx';
+// import Artists from './pages/admin/Artists.jsx';
+// import Users from './pages/admin/Users.jsx';
+// import Analytics from './pages/admin/Analytics.jsx';
+// import AdminSettings from './pages/admin/settings.jsx';
+// import CheckoutPage from './pages/checkout/CheckoutPage';
 
 import './index.css';
 
@@ -65,7 +66,8 @@ function App() {
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/account" element={<Account />} />
               <Route path="/artists/:id" element={<Artist />} />
-              <Route path="/admin" element={<AdminLayout />}>
+
+              {/* <Route path="/admin/*" element={<AdminLayout />}>
                 <Route index element={<Dashboard />} />
                 <Route path="songs" element={<Songs />} />
                 <Route path="albums" element={<AdminAlbums />} />
@@ -73,7 +75,8 @@ function App() {
                 <Route path="users" element={<Users />} />
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="settings" element={<AdminSettings />} />
-              </Route>
+              </Route> */}
+
               <Route path="/search" element={<SearchResults />} />
             </Routes>
             <Footer />

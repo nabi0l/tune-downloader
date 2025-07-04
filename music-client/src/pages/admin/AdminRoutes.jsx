@@ -6,7 +6,7 @@ import Songs from './songs/Songs';
 import SongForm from './songs/SongForm';
 import Users from './Users';
 import Analytics from './Analytics';
-import Settings from './Settings';
+import Settings from './settings';
 import Albums from './Albums';
 import Artists from './Artists';
 
