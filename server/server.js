@@ -25,7 +25,9 @@ app.use(cors({
     'http://localhost:5173',
     'http://localhost:3000',
     'http://127.0.0.1:5173',
-    'https://tune-downloader.vercel.app'
+    'https://tune-downloader.vercel.app',
+    'https://tune-downloader-d9hh41acu-abigail-getachews-projects.vercel.app',
+    'https://tune-downloader-*.vercel.app' // This will match all preview deployments
   ],
   credentials: true
 }));

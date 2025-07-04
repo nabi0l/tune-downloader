@@ -5,14 +5,11 @@ const useTrendingSongs = (limit = 20, offset = 0) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Get the base URL for API calls
+  // Base URL for API calls
   const getApiUrl = () => {
-    // In development, use the proxy
-    if (import.meta.env.DEV) {
-      return '/api';
-    }
-    // In production, use the full server URL
-    return 'http://localhost:5000/api';
+    // In development, the proxy will handle the request
+    // In production, use the environment variable VITE_API_URL
+    return import.meta.env.VITE_API_BASE_URL || '';
   };
 
   useEffect(() => {
@@ -22,10 +19,22 @@ const useTrendingSongs = (limit = 20, offset = 0) => {
         setError(null);
         
         const apiUrl = getApiUrl();
-        const response = await fetch(`${apiUrl}/songs/trending?limit=${limit}&offset=${offset}`);
+        const url = `${apiUrl}/songs/trending?limit=${limit}&offset=${offset}`;
+        console.log('Fetching from URL:', url);
+        
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          // Add credentials if your API requires authentication
+          // credentials: 'include',
+        });
         
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          const errorData = await response.json().catch(() => ({}));
+          console.error('API Error Response:', errorData);
+          throw new Error(`HTTP error! status: ${response.status} - ${errorData.message || 'No error details'}`);
         }
         
         const data = await response.json();
@@ -36,8 +45,14 @@ const useTrendingSongs = (limit = 20, offset = 0) => {
           throw new Error(data.message || 'Failed to fetch trending songs');
         }
       } catch (err) {
-        console.error('Error fetching trending songs:', err);
-        setError(err.message);
+        console.error('Error fetching trending songs:', {
+          message: err.message,
+          name: err.name,
+          stack: err.stack,
+          url: window.location.href,
+          timestamp: new Date().toISOString()
+        });
+        setError(`Network error: ${err.message}. Please check your connection and try again.`);
       } finally {
         setLoading(false);
       }
