@@ -27,7 +27,8 @@ app.use(cors({
     'http://127.0.0.1:5173',
     'https://tune-downloader.vercel.app',
     'https://tune-downloader-d9hh41acu-abigail-getachews-projects.vercel.app',
-    'https://tune-downloader-*.vercel.app' // This will match all preview deployments
+    'https://tune-downloader-*.vercel.app', // This will match all preview deployments
+    'https://tune-downloader.onrender.com' // Add your Render deployment URL
   ],
   credentials: true
 }));
