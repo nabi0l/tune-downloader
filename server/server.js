@@ -55,22 +55,38 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/christian
     const songCount = await Song.countDocuments();
     const adminCount = await User.countDocuments({ role: 'admin' });
 
+    console.log(`📊 Current database status:`);
+    console.log(`   Albums: ${albumCount}`);
+    console.log(`   Artists: ${artistCount}`);
+    console.log(`   Songs: ${songCount}`);
+    console.log(`   Admins: ${adminCount}`);
+
     if (albumCount === 0 || artistCount === 0 || songCount === 0 || adminCount === 0) {
-      console.log('One or more collections are empty. Seeding all main collections...');
+      console.log('🌱 One or more collections are empty. Seeding all main collections...');
       const seedAlbums = require('./seedAlbums');
       const seedArtists = require('./seedArtists');
       const seedSongs = require('./seedSongs');
       const seedAdmins = require('./seedAdmins');
       const seedArtistsFromSpotify = require('./seedArtistsFromSpotify');
 
+      console.log('🌱 Seeding artists...');
       await seedArtists();
+      
+      console.log('🌱 Seeding songs...');
       await seedSongs();
+      
+      console.log('🌱 Seeding albums...');
       await seedAlbums();
+      
+      console.log('🌱 Seeding admins...');
       await seedAdmins();
+      
+      console.log('🌱 Seeding artists from Spotify...');
       await seedArtistsFromSpotify();
-      console.log('All main collections seeded successfully!');
+      
+      console.log('✅ All main collections seeded successfully!');
     } else {
-      console.log('All main collections already have data. No seeding needed.');
+      console.log('✅ All main collections already have data. No seeding needed.');
     }
   } catch (error) {
     console.error('Error seeding database:', error);
@@ -93,6 +109,109 @@ app.use('/api/favorites', favoritesRoutes);
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date() });
+});
+
+// Database status endpoint
+app.get('/api/db-status', async (req, res) => {
+  try {
+    const Album = require('./models/Album');
+    const Artist = require('./models/Artist');
+    const Song = require('./models/Song');
+    const User = require('./models/User');
+
+    const albumCount = await Album.countDocuments();
+    const artistCount = await Artist.countDocuments();
+    const songCount = await Song.countDocuments();
+    const userCount = await User.countDocuments();
+    const adminCount = await User.countDocuments({ role: 'admin' });
+
+    // Get sample data
+    const sampleAlbums = await Album.find().limit(3);
+    const sampleSongs = await Song.find().limit(3);
+    const sampleArtists = await Artist.find().limit(3);
+
+    res.json({
+      status: 'OK',
+      counts: {
+        albums: albumCount,
+        artists: artistCount,
+        songs: songCount,
+        users: userCount,
+        admins: adminCount
+      },
+      samples: {
+        albums: sampleAlbums.map(album => ({ title: album.title, artist: album.artist })),
+        songs: sampleSongs.map(song => ({ title: song.title, artist: song.artist })),
+        artists: sampleArtists.map(artist => ({ name: artist.name, genre: artist.genre }))
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Force reseed endpoint
+app.post('/api/force-reseed', async (req, res) => {
+  try {
+    console.log('🔄 Force reseeding database...');
+    
+    const Album = require('./models/Album');
+    const Artist = require('./models/Artist');
+    const Song = require('./models/Song');
+    const User = require('./models/User');
+
+    // Clear existing data
+    await Album.deleteMany({});
+    await Artist.deleteMany({});
+    await Song.deleteMany({});
+    await User.deleteMany({ role: 'admin' });
+    console.log('🗑️ Cleared all collections');
+
+    // Import seeding functions
+    const seedAlbums = require('./seedAlbums');
+    const seedArtists = require('./seedArtists');
+    const seedSongs = require('./seedSongs');
+    const seedAdmins = require('./seedAdmins');
+    const seedArtistsFromSpotify = require('./seedArtistsFromSpotify');
+
+    // Seed all collections
+    console.log('🌱 Seeding artists...');
+    await seedArtists();
+    
+    console.log('🌱 Seeding songs...');
+    await seedSongs();
+    
+    console.log('🌱 Seeding albums...');
+    await seedAlbums();
+    
+    console.log('🌱 Seeding admins...');
+    await seedAdmins();
+    
+    console.log('🌱 Seeding artists from Spotify...');
+    await seedArtistsFromSpotify();
+
+    // Get final counts
+    const finalAlbumCount = await Album.countDocuments();
+    const finalArtistCount = await Artist.countDocuments();
+    const finalSongCount = await Song.countDocuments();
+    const finalAdminCount = await User.countDocuments({ role: 'admin' });
+
+    console.log('✅ Force reseed completed successfully!');
+    
+    res.json({
+      status: 'success',
+      message: 'Database reseeded successfully',
+      counts: {
+        albums: finalAlbumCount,
+        artists: finalArtistCount,
+        songs: finalSongCount,
+        admins: finalAdminCount
+      }
+    });
+  } catch (error) {
+    console.error('❌ Error during force reseed:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Add a friendly root route
