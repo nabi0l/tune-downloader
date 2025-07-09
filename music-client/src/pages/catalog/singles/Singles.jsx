@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react';
 import { FaPlay, FaPause, FaShoppingCart, FaHeart, FaRegHeart, FaSearch } from 'react-icons/fa';
 import SingleHero from './SingleHero';
 import { useCart } from '../../../contexts/cartContext';
+import { useMusicPlayer } from '../../../contexts/MusicPlayerContext';
 
 const Singles = () => {
   const [singles, setSingles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [playingTrack, setPlayingTrack] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const { addToCart, favorites, toggleFavorite } = useCart();
+  const { playTrack, pauseTrack, isPlaying, currentTrack } = useMusicPlayer();
 
   useEffect(() => {
     const fetchSingles = async () => {
@@ -44,16 +45,6 @@ const Singles = () => {
       return a.title.localeCompare(b.title);
     });
 
-  const togglePlay = (trackId) => {
-    if (playingTrack === trackId) {
-      setPlayingTrack(null);
-      // Pause audio logic here
-    } else {
-      setPlayingTrack(trackId);
-      // Play audio logic here
-    }
-  };
-
   const toggleWishlist = (trackId) => {
     const isCurrentlyFavorited = favorites.some(fav => fav.id === trackId);
     const single = singles.find(s => s.id === trackId);
@@ -87,6 +78,20 @@ const Singles = () => {
     console.log(`${single.title} added to cart!`);
     // Optionally show a toast or alert
     // alert(`${single.title} added to cart!`);
+  };
+
+  const handlePlayPause = (single) => {
+    if (currentTrack && currentTrack.id === single.id) {
+      pauseTrack();
+    } else {
+      playTrack({
+        id: single.id,
+        title: single.title,
+        artist: single.artist,
+        audioUrl: single.audioUrl || single.audio, // Make sure your API returns this!
+        coverImage: single.coverImage,
+      });
+    }
   };
 
   return (
@@ -132,50 +137,55 @@ const Singles = () => {
             {/* Singles Grid */}
             {filteredSingles.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredSingles.map((single) => (
-                  <div key={single.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <div className="relative aspect-square">
-                      <img 
-                        src={single.coverImage} 
-                        alt={`${single.title} cover`} 
-                        className="w-full h-full object-cover"
-                      />
-                      <button
-                        onClick={() => togglePlay(single.id)}
-                        className="absolute bottom-4 right-4 bg-black bg-opacity-80 text-white rounded-full p-3 hover:bg-opacity-100 transition-all transform hover:scale-105"
-                      >
-                        {playingTrack === single.id ? <FaPause /> : <FaPlay />}
-                      </button>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-lg text-gray-900 truncate">{single.title}</h3>
-                      <p className="text-gray-600 text-sm mb-2">{single.artist}</p>
-                      <div className="flex justify-between items-center mt-3">
-                        <span className="text-lg font-bold text-gray-900">${(single.price || 0).toFixed(2)}</span>
-                        <div className="flex space-x-2">
-                          <button 
-                            onClick={() => toggleWishlist(single.id)}
-                            className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                            aria-label={favorites.some(fav => fav.id === single.id) ? 'Remove from wishlist' : 'Add to wishlist'}
-                          >
-                            {favorites.some(fav => fav.id === single.id) ? (
-                              <FaHeart className="text-red-500" />
-                            ) : (
-                              <FaRegHeart />
-                            )}
-                          </button>
-                          <button 
-                            onClick={() => handleAddToCart(single)}
-                            className="px-4 py-2 bg-black text-white text-sm font-medium rounded-full hover:bg-gray-800 transition-colors flex items-center"
-                          >
-                            <FaShoppingCart className="mr-2" />
-                            Buy
-                          </button>
+                {filteredSingles.map((single) => {
+                  const isCurrentlyPlaying = isPlaying && currentTrack?.id === single.id;
+                  
+                  return (
+                    <div key={single.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+                      <div className="relative aspect-square">
+                        <img 
+                          src={single.coverImage} 
+                          alt={`${single.title} cover`} 
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          onClick={() => handlePlayPause(single)}
+                          className="absolute bottom-4 right-4 bg-black bg-opacity-80 text-white rounded-full p-3 hover:bg-opacity-100 transition-all transform hover:scale-105"
+                          aria-label={isCurrentlyPlaying ? 'Pause' : 'Play'}
+                        >
+                          {isCurrentlyPlaying ? <FaPause /> : <FaPlay />}
+                        </button>
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-semibold text-lg text-gray-900 truncate">{single.title}</h3>
+                        <p className="text-gray-600 text-sm mb-2">{single.artist}</p>
+                        <div className="flex justify-between items-center mt-3">
+                          <span className="text-lg font-bold text-gray-900">${(single.price || 0).toFixed(2)}</span>
+                          <div className="flex space-x-2">
+                            <button 
+                              onClick={() => toggleWishlist(single.id)}
+                              className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                              aria-label={favorites.some(fav => fav.id === single.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+                            >
+                              {favorites.some(fav => fav.id === single.id) ? (
+                                <FaHeart className="text-red-500" />
+                              ) : (
+                                <FaRegHeart />
+                              )}
+                            </button>
+                            <button 
+                              onClick={() => handleAddToCart(single)}
+                              className="px-4 py-2 bg-black text-white text-sm font-medium rounded-full hover:bg-gray-800 transition-colors flex items-center"
+                            >
+                              <FaShoppingCart className="mr-2" />
+                              Buy
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center py-12">

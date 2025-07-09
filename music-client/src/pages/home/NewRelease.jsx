@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { FaPlay, FaShoppingCart, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaPlay, FaShoppingCart, FaHeart, FaRegHeart, FaPause } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import useNewReleases from "../../hooks/useNewReleases";
 import { useCart } from "../../contexts/cartContext";
+import { useMusicPlayer } from "../../contexts/MusicPlayerContext";
 
 const NewRelease = () => {
   const [activeTab, setActiveTab] = useState('singles');
@@ -99,7 +100,8 @@ const NewRelease = () => {
       date: formatReleaseDate(song.releaseDate),
       price: "$1.29",
       isNew: isNewRelease(song.releaseDate),
-      duration: formatDuration(song.duration)
+      duration: formatDuration(song.duration),
+      audioUrl: song.audioUrl || `/audio/artists/${song.artistSlug}/full-songs/${song.fileName}`,
     })),
     albums: filterSongsByType(newReleases, 'albums')
   };
@@ -107,6 +109,28 @@ const NewRelease = () => {
   const MusicGridItem = ({ item }) => {
     const [isHovered, setIsHovered] = useState(false);
     const isLiked = favorites.some(fav => fav.id === item.id);
+    const { playTrack, pauseTrack, isPlaying, currentTrack } = useMusicPlayer();
+    
+    const isCurrentlyPlaying = isPlaying && currentTrack?.id === item.id;
+
+    const handlePlayPauseClick = async (e) => {
+      e.stopPropagation();
+      if (isCurrentlyPlaying) {
+        pauseTrack();
+      } else {
+        try {
+          await playTrack({
+            id: item.id,
+            title: item.title,
+            artist: item.artist,
+            audioUrl: item.audioUrl,
+            coverImage: item.image
+          });
+        } catch (error) {
+          console.error('Error playing track:', error);
+        }
+      }
+    };
 
     const handleAddToCart = () => {
       const cartItem = {
@@ -196,9 +220,18 @@ const NewRelease = () => {
 
             {/* Action Buttons */}
             <div className="flex justify-between gap-2">
-              <button className="flex-1 bg-gray-100 text-black py-2 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                <FaPlay className="mr-2" size={14} />
-                <span className="text-xs">Play</span>
+              <button 
+                onClick={handlePlayPauseClick}
+                className={`flex-1 ${isCurrentlyPlaying ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-black'} py-2 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors`}
+              >
+                {isCurrentlyPlaying ? (
+                  <FaPause className="mr-2" size={14} />
+                ) : (
+                  <FaPlay className="mr-2" size={14} />
+                )}
+                <span className="text-xs">
+                  {isCurrentlyPlaying ? 'Pause' : 'Play'}
+                </span>
               </button>
               <button
                 className="flex-1 bg-gray-100 text-black py-2 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors"

@@ -7,20 +7,43 @@ import {
   FaShoppingCart,
   FaChevronLeft,
   FaChevronRight,
+  FaPlay,
+  FaPause,
 } from "react-icons/fa";
 import "swiper/css";
 import "swiper/css/navigation";
 import useTrendingSongs from "../../hooks/useTrendingSongs";
 import { useCart } from "../../contexts/cartContext";
+import { useMusicPlayer } from "../../contexts/MusicPlayerContext";
 
 const TrendingNow = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
   const { songs: trendingSongs, loading, error } = useTrendingSongs(10);
   const { addToCart, favorites, toggleFavorite } = useCart();
+  const { playTrack, pauseTrack, currentTrack, isPlaying } = useMusicPlayer();
 
   // Check if a song is in favorites
   const isFavorite = (songId) => {
     return favorites.some(fav => fav.id === songId || fav._id === songId);
+  };
+
+  // Handle play/pause functionality
+  const handlePlayPause = (song) => {
+    const isCurrentlyPlaying = currentTrack && currentTrack.id === song._id && isPlaying;
+    
+    if (isCurrentlyPlaying) {
+      pauseTrack();
+    } else {
+      const trackData = {
+        id: song._id,
+        title: song.title,
+        artist: song.artist,
+        audioUrl: song.audioUrl,
+        coverImage: song.coverImage,
+        duration: song.duration
+      };
+      playTrack(trackData);
+    }
   };
 
   // Handle favorite toggle
@@ -140,70 +163,101 @@ const TrendingNow = () => {
             1024: { slidesPerView: 4 },
           }}
         >
-          {trendingSongs.map((song, index) => (
-            <SwiperSlide key={song._id}>
-              <div
-                className="relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-full mb-8"
-                onMouseEnter={() => setHoveredCard(song._id)}
-                onMouseLeave={() => setHoveredCard(null)}
-              >
-                <div className="absolute top-4 left-4 z-10">
-                  <span className="inline-block bg-black text-white px-3 py-1 rounded-full text-xs font-medium shadow-md">
-                    {getTrendingTag(song, index)}
-                  </span>
-                </div>
-                <div className="relative aspect-square overflow-hidden">
-                  <img
-                    src={song.coverImage || getFallbackImage(index)}
-                    alt={song.title}
-                    className={`w-full h-full object-cover transition-transform duration-500 ${
-                      hoveredCard === song._id ? "scale-110" : "scale-100"
-                    }`}
-                    onError={(e) => {
-                      e.target.src = getFallbackImage(index);
-                    }}
-                  />
-                  <div
-                    className={`absolute inset-0 flex items-center justify-center gap-4 bg-black/30 backdrop-blur-sm transition-opacity duration-300 ${
-                      hoveredCard === song._id ? "opacity-100" : "opacity-0"
-                    }`}
-                  >
-                    <button
-                      className="action-button bg-white/90 p-3 rounded-full hover:scale-110 transition-transform shadow-lg"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleFavorite(song);
+          {trendingSongs.map((song, index) => {
+            const isCurrentlyPlaying = currentTrack && currentTrack.id === song._id && isPlaying;
+            
+            return (
+              <SwiperSlide key={song._id}>
+                <div
+                  className="relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-full mb-8"
+                  onMouseEnter={() => setHoveredCard(song._id)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                >
+                  <div className="absolute top-4 left-4 z-10">
+                    <span className="inline-block bg-black text-white px-3 py-1 rounded-full text-xs font-medium shadow-md">
+                      {getTrendingTag(song, index)}
+                    </span>
+                  </div>
+                  <div className="relative aspect-square overflow-hidden">
+                    <img
+                      src={song.coverImage || getFallbackImage(index)}
+                      alt={song.title}
+                      className={`w-full h-full object-cover transition-transform duration-500 ${
+                        hoveredCard === song._id ? "scale-110" : "scale-100"
+                      }`}
+                      onError={(e) => {
+                        e.target.src = getFallbackImage(index);
                       }}
+                    />
+                    <div
+                      className={`absolute inset-0 flex items-center justify-center gap-4 bg-black/30 backdrop-blur-sm transition-opacity duration-300 ${
+                        hoveredCard === song._id ? "opacity-100" : "opacity-0"
+                      }`}
                     >
-                      {isFavorite(song._id) ? (
-                        <FaHeart className="h-5 w-5 text-red-500" />
-                      ) : (
-                        <FaRegHeart className="h-5 w-5 text-black" />
-                      )}
-                    </button>
-                    <button
-                      className="action-button bg-white/90 p-3 rounded-full hover:scale-110 transition-transform shadow-lg"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddToCart(song);
-                      }}
-                    >
-                      <FaShoppingCart className="h-5 w-5 text-black" />
-                    </button>
+                      {/* Play/Pause Button */}
+                      <button
+                        className="action-button bg-white/90 p-3 rounded-full hover:scale-110 transition-transform shadow-lg"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePlayPause(song);
+                        }}
+                      >
+                        {isCurrentlyPlaying ? (
+                          <FaPause className="h-5 w-5 text-black" />
+                        ) : (
+                          <FaPlay className="h-5 w-5 text-black ml-1" />
+                        )}
+                      </button>
+                      
+                      {/* Favorite Button */}
+                      <button
+                        className="action-button bg-white/90 p-3 rounded-full hover:scale-110 transition-transform shadow-lg"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleFavorite(song);
+                        }}
+                      >
+                        {isFavorite(song._id) ? (
+                          <FaHeart className="h-5 w-5 text-red-500" />
+                        ) : (
+                          <FaRegHeart className="h-5 w-5 text-black" />
+                        )}
+                      </button>
+                      
+                      {/* Cart Button */}
+                      <button
+                        className="action-button bg-white/90 p-3 rounded-full hover:scale-110 transition-transform shadow-lg"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddToCart(song);
+                        }}
+                      >
+                        <FaShoppingCart className="h-5 w-5 text-black" />
+                      </button>
+                    </div>
+                    
+                    {/* Currently Playing Indicator */}
+                    {isCurrentlyPlaying && !hoveredCard && (
+                      <div className="absolute top-4 right-4 z-10">
+                        <div className="bg-green-500 text-white p-2 rounded-full animate-pulse">
+                          <FaPause className="h-3 w-3" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-4 bg-white">
+                    <h3 className="font-bold text-lg truncate">{song.title}</h3>
+                    <p className="text-gray-600 text-sm truncate">
+                      {song.artist}
+                    </p>
+                    <p className="text-gray-500 text-xs mt-1">
+                      {formatDuration(song.duration)} • {song.playCount} plays
+                    </p>
                   </div>
                 </div>
-                <div className="p-4 bg-white">
-                  <h3 className="font-bold text-lg truncate">{song.title}</h3>
-                  <p className="text-gray-600 text-sm truncate">
-                    {song.artist}
-                  </p>
-                  <p className="text-gray-500 text-xs mt-1">
-                    {formatDuration(song.duration)} • {song.playCount} plays
-                  </p>
-                </div>
-              </div>
-            </SwiperSlide>
-          ))}
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
         <button
           className="swiper-prev absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white p-4 rounded-full shadow-lg hover:bg-gray-100 transition-colors flex items-center justify-center"

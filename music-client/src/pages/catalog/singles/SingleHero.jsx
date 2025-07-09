@@ -55,7 +55,7 @@ const SingleHero = () => {
       </div>
 
       {/* Add this to your global CSS */}
-      <style jsx>{`
+      <style>{`
         @keyframes marquee {
           0% {
             transform: translateX(0);

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio File Access Test</title>
+</head>
+<body>
+    <h1>Audio File Access Test</h1>
+    
+    <h2>Test Audio Files</h2>
+    <div id="results"></div>
+    
+    <script>
+        const testFiles = [
+            '/audio/artists/hillsong-worship/full-songs/What A Beautiful Name - Hillsong Worship - Hillsong Worship.mp3',
+            '/audio/artists/hillsong-worship/full-songs/King of Kings (Live) - Hillsong Worship - Hillsong Worship.mp3',
+            '/audio/artists/hillsong-worship/full-songs/Cornerstone - Live  Hillsong Worship - Hillsong Worship.mp3'
+        ];
+        
+        const resultsDiv = document.getElementById('results');
+        
+        testFiles.forEach(file => {
+            const div = document.createElement('div');
+            div.innerHTML = `<p>Testing: ${file}</p>`;
+            resultsDiv.appendChild(div);
+            
+            fetch(file, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        div.innerHTML += `<p style="color: green;">✅ File accessible (Status: ${response.status})</p>`;
+                    } else {
+                        div.innerHTML += `<p style="color: red;">❌ File not found (Status: ${response.status})</p>`;
+                    }
+                })
+                .catch(error => {
+                    div.innerHTML += `<p style="color: red;">❌ Error accessing file: ${error.message}</p>`;
+                });
+        });
+    </script>
+</body>
+</html> 

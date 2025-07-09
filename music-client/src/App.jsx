@@ -2,8 +2,11 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CartProvider } from "./contexts/cartContext";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
 import { SearchProvider } from "./contexts/SearchContext";
+import { MusicPlayerProvider } from "./contexts/MusicPlayerContext";
 import Footer from './ui/navigation/Footer';
 import Navbar from './ui/navigation/Navbar';
+import AudioPlayer from './components/AudioPlayer';
+import AudioTest from './components/AudioTest';
 
 // Pages
 
@@ -12,7 +15,7 @@ import Albums from './pages/catalog/albums/Albums';
 import Singles from './pages/catalog/singles/Singles';
 import Home from './pages/home/Home';
 import About from './pages/about/About';
-import Store from './pages/store/Store';
+// import Store from './pages/store/Store';
 import Contact from './pages/contact/Contact';
 import Cart from './pages/cart/Cart';
 import Favorites from './pages/profile/favorites/Favorites';
@@ -45,42 +48,46 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <SearchProvider>
-          <Router>
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/catalog/artists" element={<Artist />} />
-              <Route path="/catalog/albums" element={<Albums />} />
-              <Route path="/catalog/singles" element={<Singles />} />
-              <Route path="/store" element={<Store />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path='/login' element={<LoginPage />} />
-              <Route path='/signup' element={<SignupPage />} />
-              <Route path="/favorites" element={<Favorites />} />
-              <Route path="/purchase-history" element={<PurchaseHistory />} />
-              <Route path="/account/settings" element={<Settings />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/account" element={<Account />} />
-              <Route path="/artists/:id" element={<Artist />} />
+          <MusicPlayerProvider>
+            <Router>
+              <Navbar />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/catalog/artists" element={<Artist />} />
+                <Route path="/catalog/albums" element={<Albums />} />
+                <Route path="/catalog/singles" element={<Singles />} />
+                {/* <Route path="/store" element={<Store />} /> */}
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path='/login' element={<LoginPage />} />
+                <Route path='/signup' element={<SignupPage />} />
+                <Route path="/favorites" element={<Favorites />} />
+                <Route path="/purchase-history" element={<PurchaseHistory />} />
+                <Route path="/account/settings" element={<Settings />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/account" element={<Account />} />
+                <Route path="/artists/:id" element={<Artist />} />
+                <Route path="/audio-test" element={<AudioTest />} />
 
-              {/* <Route path="/admin/*" element={<AdminLayout />}>
-                <Route index element={<Dashboard />} />
-                <Route path="songs" element={<Songs />} />
-                <Route path="albums" element={<AdminAlbums />} />
-                <Route path="artists" element={<Artists />} />
-                <Route path="users" element={<Users />} />
-                <Route path="analytics" element={<Analytics />} />
-                <Route path="settings" element={<AdminSettings />} />
-              </Route> */}
+                {/* <Route path="/admin/*" element={<AdminLayout />}>
+                  <Route index element={<Dashboard />} />
+                  <Route path="songs" element={<Songs />} />
+                  <Route path="albums" element={<AdminAlbums />} />
+                  <Route path="artists" element={<Artists />} />
+                  <Route path="users" element={<Users />} />
+                  <Route path="analytics" element={<Analytics />} />
+                  <Route path="settings" element={<AdminSettings />} />
+                </Route> */}
 
-              <Route path="/search" element={<SearchResults />} />
-            </Routes>
-            <Footer />
-          </Router>
+                <Route path="/search" element={<SearchResults />} />
+              </Routes>
+              <Footer />
+              <AudioPlayer />
+            </Router>
+          </MusicPlayerProvider>
         </SearchProvider>
       </CartProvider>
     </AuthProvider>

@@ -1,2 +1,305 @@
 @import "tailwindcss";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for audio player */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-track {
+  background: #e5e7eb;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #000;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slider::-moz-range-track {
+  background: #e5e7eb;
+  height: 4px;
+  border-radius: 2px;
+  border: none;
+}
+
+.slider::-moz-range-thumb {
+  background: #000;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+/* Audio player animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Hover effects for play buttons */
+.play-button-hover {
+  transition: all 0.2s ease-in-out;
+}
+
+.play-button-hover:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Progress bar hover effect */
+.progress-bar:hover {
+  cursor: pointer;
+}
+
+.progress-bar:hover .progress-fill {
+  background-color: #374151;
+}
+
+/* Volume slider custom styling */
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-track {
+  background: #e5e7eb;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #000;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Audio player responsive design */
+@media (max-width: 768px) {
+  .audio-player-container {
+    padding: 0.5rem;
+  }
+  
+  .audio-player-container .flex {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .audio-player-container .flex-1 {
+    order: 2;
+  }
+  
+  .audio-player-container .space-x-4 {
+    order: 1;
+  }
+  
+  .audio-player-container .mx-8 {
+    margin: 0.5rem 0;
+  }
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Focus styles for accessibility */
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+/* Loading animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Scale animation for hover effects */
+@keyframes scale {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+.scale-hover:hover {
+  animation: scale 0.2s ease-out;
+}
+
+/* Audio player specific styles */
+.audio-player {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.audio-player .progress-container {
+  position: relative;
+  cursor: pointer;
+}
+
+.audio-player .progress-container:hover .progress-bar {
+  background-color: #d1d5db;
+}
+
+.audio-player .progress-fill {
+  transition: width 0.1s ease;
+}
+
+/* Button hover states */
+.btn-play {
+  transition: all 0.2s ease;
+}
+
+.btn-play:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-control {
+  transition: all 0.2s ease;
+}
+
+.btn-control:hover {
+  color: #000;
+  transform: scale(1.1);
+}
+
+/* Close button specific styles */
+.btn-control[title="Close player"]:hover {
+  color: #ef4444;
+  transform: scale(1.1);
+  background-color: rgba(239, 68, 68, 0.1);
+  border-radius: 50%;
+}
+
+/* Volume control styles */
+.volume-control {
+  position: relative;
+}
+
+.volume-control:hover .volume-slider {
+  opacity: 1;
+}
+
+.volume-slider {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+/* Track info styles */
+.track-info {
+  min-width: 0;
+}
+
+.track-info h4 {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.track-info p {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .audio-player .flex {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .audio-player .flex-1 {
+    min-width: 100%;
+    order: 3;
+  }
+  
+  .audio-player .space-x-4 {
+    order: 1;
+    justify-content: center;
+  }
+  
+  .audio-player .mx-8 {
+    order: 2;
+    margin: 0.5rem 0;
+  }
+  
+  .audio-player .space-x-2 {
+    order: 4;
+    justify-content: center;
+  }
+}
+
