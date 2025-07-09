@@ -144,7 +144,10 @@ const AudioPlayer = () => {
                 step="0.01"
                 value={isMuted ? 0 : volume}
                 onChange={handleVolumeChange}
-                className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer slider volume-slider"
+                className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer volume-slider"
+                style={{
+                  '--volume-progress': `${(isMuted ? 0 : volume) * 100}%`
+                }}
               />
             </div>
           </div>
