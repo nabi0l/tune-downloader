@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const morgan = require('morgan');
+const path = require('path');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -34,6 +35,62 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(morgan('dev'));
+
+// Serve static audio files
+app.use('/audio', express.static(path.join(__dirname, '../music-client/public/audio')));
+
+// Test audio file serving
+app.get('/api/test-audio/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const audioPath = path.join(__dirname, '../music-client/public/audio/artists/hillsong-worship/full-songs', filename);
+  
+  if (require('fs').existsSync(audioPath)) {
+    res.json({ 
+      success: true, 
+      message: 'Audio file exists',
+      path: audioPath,
+      url: `/audio/artists/hillsong-worship/full-songs/${filename}`
+    });
+  } else {
+    res.status(404).json({ 
+      success: false, 
+      message: 'Audio file not found',
+      path: audioPath
+    });
+  }
+});
+
+// Debug route to list available audio files
+app.get('/api/debug/audio-files', (req, res) => {
+  try {
+    const fs = require('fs');
+    const audioDir = path.join(__dirname, '../music-client/public/audio/artists/hillsong-worship/full-songs');
+    
+    if (fs.existsSync(audioDir)) {
+      const files = fs.readdirSync(audioDir);
+      const audioFiles = files.filter(file => file.endsWith('.mp3'));
+      
+      res.json({
+        success: true,
+        directory: audioDir,
+        files: audioFiles,
+        count: audioFiles.length
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'Audio directory not found',
+        directory: audioDir
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error reading audio directory',
+      error: error.message
+    });
+  }
+});
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/christian_music_platform', {
